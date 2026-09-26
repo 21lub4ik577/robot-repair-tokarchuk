@@ -6087,6 +6087,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7548699333884760462, guid: e6115b7415c1af940a90707d6d7ab260,
+        type: 3}
+      propertyPath: MoveAction.m_SingletonActionBindings.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7548699333884760462, guid: e6115b7415c1af940a90707d6d7ab260,
+        type: 3}
+      propertyPath: MoveAction.m_SingletonActionBindings.Array.data[10].m_Id
+      value: 66ddfebc-3737-4506-ba00-b65762b7d1fb
+      objectReference: {fileID: 0}
+    - target: {fileID: 7548699333884760462, guid: e6115b7415c1af940a90707d6d7ab260,
+        type: 3}
+      propertyPath: MoveAction.m_SingletonActionBindings.Array.data[10].m_Path
+      value: <Gamepad>/leftStick
+      objectReference: {fileID: 0}
+    - target: {fileID: 7548699333884760462, guid: e6115b7415c1af940a90707d6d7ab260,
+        type: 3}
+      propertyPath: MoveAction.m_SingletonActionBindings.Array.data[10].m_Action
+      value: Move
+      objectReference: {fileID: 0}
     - target: {fileID: 8592499273705141086, guid: e6115b7415c1af940a90707d6d7ab260,
         type: 3}
       propertyPath: m_Name
