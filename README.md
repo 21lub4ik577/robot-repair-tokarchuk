@@ -13,8 +13,8 @@ Adventure Game: Robot Repair (Unity Technologies), Unity 6.3, URP.
 * __Що не вийшло або забрало найбільше часу:__ Найбільше часу забрало створення підлоги, налаштування руху персонажа та перевірка роботи клавіш.
 * __Що зрозумів про Update і Time.deltaTime:__ Зрозумів, що Update виконується багато разів під час роботи гри, а Time.deltaTime потрібен для того, щоб швидкість руху не залежала від кількості кадрів за секунду.
 * __Що робитиму далі:__ Запишу коротке відео роботи гри та підготую репозиторій до здачі і зроблю "More things to try":
-### Gamepad Left Stick: ![alt text](image.png)
-### Plan your environment: ![alt text](image-1.png)
+### Gamepad Left Stick: ![alt text](image-2.png)
+### Plan your environment: ![alt text](image-3.png)
 
 ### __24.09.2026__ - Юніт 2: оточення і фізика
 * __Що зроблено:__ Додав фізику для персонажа, Rigidbody 2D та Collider 2D. Налаштував зіткнення персонажа з об'єктами рівня та почав працювати з Tilemap Collider 2D.
