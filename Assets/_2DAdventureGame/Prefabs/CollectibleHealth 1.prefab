@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38436f0f6c93930478b2ff704ee18b1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthCollectible
+  healthAmount: 2
 --- !u!61 &4946750128149406340
 BoxCollider2D:
   m_ObjectHideFlags: 0
