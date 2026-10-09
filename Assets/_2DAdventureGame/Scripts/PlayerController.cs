@@ -1,9 +1,14 @@
-using UnityEngine; 
-using UnityEngine.InputSystem; 
-public class PlayerController : MonoBehaviour 
-{ 
-    public InputAction MoveAction; 
-    Rigidbody2D rigidbody2d; 
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerController : MonoBehaviour
+{
+    public InputAction MoveAction;
+    public InputAction LaunchAction;
+    Rigidbody2D rigidbody2d;
+    Animator animator;
+    Vector2 moveDirection = new Vector2(1, 0);
+    public GameObject projectilePrefab;
 
     public float timeInvincible = 2.0f;
     bool isInvincible;
@@ -11,18 +16,32 @@ public class PlayerController : MonoBehaviour
     public int maxHealth = 5;
     public int health { get { return currentHealth; } }
     int currentHealth;
-    Vector2 move; 
+    Vector2 move;
     public float speed = 3.0f;
-    void Start() 
-    { 
-        MoveAction.Enable(); 
-        rigidbody2d = GetComponent<Rigidbody2D>(); 
+
+    void Start()
+    {
+        MoveAction.Enable();
+        LaunchAction.Enable();
+        rigidbody2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         currentHealth = maxHealth;
-    } 
-    void Update() 
-    { 
-        move = MoveAction.ReadValue<Vector2>(); 
-        //Debug.Log(move); 
+    }
+
+    void Update()
+    {
+        move = MoveAction.ReadValue<Vector2>();
+
+        if (!Mathf.Approximately(move.x, 0.0f)
+            || !Mathf.Approximately(move.y, 0.0f))
+        {
+            moveDirection.Set(move.x, move.y);
+            moveDirection.Normalize();
+        }
+
+        animator.SetFloat("Look X", moveDirection.x);
+        animator.SetFloat("Look Y", moveDirection.y);
+        animator.SetFloat("Speed", move.magnitude);
 
         if (isInvincible)
         {
@@ -32,13 +51,19 @@ public class PlayerController : MonoBehaviour
                 isInvincible = false;
             }
         }
-    } 
-    void FixedUpdate() 
-    { 
-        Vector2 position = (Vector2)rigidbody2d.position 
-            + move * speed * Time.deltaTime; 
-        rigidbody2d.MovePosition(position); 
-    } 
+
+        if (LaunchAction.WasPressedThisFrame())
+        {
+            Launch();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        Vector2 position = (Vector2)rigidbody2d.position
+            + move * speed * Time.deltaTime;
+        rigidbody2d.MovePosition(position);
+    }
 
     public void ChangeHealth(int amount)
     {
@@ -50,10 +75,24 @@ public class PlayerController : MonoBehaviour
             }
             isInvincible = true;
             damageCooldown = timeInvincible;
+            animator.SetTrigger("Hit");
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         Debug.Log(currentHealth + "/" + maxHealth);
     }
-} 
 
+    void Launch()
+    {
+        GameObject projectileObject = Instantiate(
+            projectilePrefab,
+            rigidbody2d.position + Vector2.up * 0.5f,
+            Quaternion.identity);
+
+        Projectile projectile =
+            projectileObject.GetComponent<Projectile>();
+
+        projectile.Launch(moveDirection, 300);
+        animator.SetTrigger("Launch");
+    }
+}
