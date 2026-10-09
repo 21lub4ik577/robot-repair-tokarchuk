@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -11,6 +12,10 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
+        if (transform.position.magnitude > 100.0f)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void Launch(Vector2 direction, float force)
