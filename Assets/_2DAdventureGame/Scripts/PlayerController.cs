@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,6 +19,9 @@ public class PlayerController : MonoBehaviour
     int currentHealth;
     Vector2 move;
     public float speed = 3.0f;
+
+    public float launchCooldown = 0.5f;
+    float launchCooldownTimer;
 
     void Start()
     {
@@ -52,9 +56,16 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (LaunchAction.WasPressedThisFrame())
+        if (launchCooldownTimer > 0)
+        {
+            launchCooldownTimer -= Time.deltaTime;
+        }
+
+        if (LaunchAction.WasPressedThisFrame()
+            && launchCooldownTimer <= 0)
         {
             Launch();
+            launchCooldownTimer = launchCooldown;
         }
     }
 
