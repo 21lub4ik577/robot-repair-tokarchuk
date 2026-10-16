@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public bool isBroken { get { return broken; } }
     public float speed;
     public bool vertical;
     public float changeTime = 3.0f;

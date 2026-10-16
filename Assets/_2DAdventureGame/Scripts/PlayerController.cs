@@ -6,17 +6,24 @@ public class PlayerController : MonoBehaviour
 {
     public InputAction MoveAction;
     public InputAction LaunchAction;
+    public InputAction TalkAction;
+
     Rigidbody2D rigidbody2d;
     Animator animator;
     Vector2 moveDirection = new Vector2(1, 0);
+
+    private NonPlayerCharacter lastNonPlayerCharacter;
+
     public GameObject projectilePrefab;
 
     public float timeInvincible = 2.0f;
     bool isInvincible;
     float damageCooldown;
+
     public int maxHealth = 5;
     public int health { get { return currentHealth; } }
     int currentHealth;
+
     Vector2 move;
     public float speed = 3.0f;
 
@@ -27,9 +34,14 @@ public class PlayerController : MonoBehaviour
     {
         MoveAction.Enable();
         LaunchAction.Enable();
+        TalkAction.Enable();
+
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         currentHealth = maxHealth;
+
+        UIHandler.instance.SetHealthValue(
+            (float)currentHealth / maxHealth);
     }
 
     void Update()
@@ -50,6 +62,7 @@ public class PlayerController : MonoBehaviour
         if (isInvincible)
         {
             damageCooldown -= Time.deltaTime;
+
             if (damageCooldown < 0)
             {
                 isInvincible = false;
@@ -67,12 +80,40 @@ public class PlayerController : MonoBehaviour
             Launch();
             launchCooldownTimer = launchCooldown;
         }
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            rigidbody2d.position + Vector2.up * 0.2f,
+            moveDirection,
+            1.5f,
+            LayerMask.GetMask("NPC"));
+
+        if (hit.collider != null)
+        {
+            NonPlayerCharacter npc =
+                hit.collider.GetComponent<NonPlayerCharacter>();
+
+            if (npc != null)
+            {
+                npc.dialogueBubble.SetActive(true);
+                lastNonPlayerCharacter = npc;
+                FindFriend();
+            }
+        }
+        else
+        {
+            if (lastNonPlayerCharacter != null)
+            {
+                lastNonPlayerCharacter.dialogueBubble.SetActive(false);
+                lastNonPlayerCharacter = null;
+            }
+        }
     }
 
     void FixedUpdate()
     {
         Vector2 position = (Vector2)rigidbody2d.position
             + move * speed * Time.deltaTime;
+
         rigidbody2d.MovePosition(position);
     }
 
@@ -84,12 +125,18 @@ public class PlayerController : MonoBehaviour
             {
                 return;
             }
+
             isInvincible = true;
             damageCooldown = timeInvincible;
             animator.SetTrigger("Hit");
         }
 
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+        currentHealth = Mathf.Clamp(
+            currentHealth + amount, 0, maxHealth);
+
+        UIHandler.instance.SetHealthValue(
+            (float)currentHealth / maxHealth);
+
         Debug.Log(currentHealth + "/" + maxHealth);
     }
 
@@ -105,5 +152,13 @@ public class PlayerController : MonoBehaviour
 
         projectile.Launch(moveDirection, 300);
         animator.SetTrigger("Launch");
+    }
+
+    void FindFriend()
+    {
+        if (TalkAction.WasPressedThisFrame())
+        {
+            UIHandler.instance.DisplayDialogue();
+        }
     }
 }
