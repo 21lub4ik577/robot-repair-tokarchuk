@@ -10,6 +10,12 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D rigidbody2d;
     Animator animator;
+    AudioSource audioSource;
+    AudioSource walkAudioSource;
+
+    [SerializeField] private AudioClip playerHitClip;
+    [SerializeField] private AudioClip playerWalkClip;
+
     Vector2 moveDirection = new Vector2(1, 0);
 
     private NonPlayerCharacter lastNonPlayerCharacter;
@@ -38,6 +44,15 @@ public class PlayerController : MonoBehaviour
 
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+
+        walkAudioSource = gameObject.AddComponent<AudioSource>();
+        walkAudioSource.loop = true;
+        walkAudioSource.playOnAwake = false;
+        walkAudioSource.spatialBlend = 0;
+
+        walkAudioSource.clip = playerWalkClip;
+
         currentHealth = maxHealth;
 
         UIHandler.instance.SetHealthValue(
@@ -58,6 +73,18 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Look X", moveDirection.x);
         animator.SetFloat("Look Y", moveDirection.y);
         animator.SetFloat("Speed", move.magnitude);
+
+        if (playerWalkClip != null && move.sqrMagnitude > 0.01f)
+        {
+            if (!walkAudioSource.isPlaying)
+            {
+                walkAudioSource.Play();
+            }
+        }
+        else
+        {
+            walkAudioSource.Stop();
+        }
 
         if (isInvincible)
         {
@@ -129,6 +156,11 @@ public class PlayerController : MonoBehaviour
             isInvincible = true;
             damageCooldown = timeInvincible;
             animator.SetTrigger("Hit");
+
+            if (audioSource != null && playerHitClip != null)
+            {
+                audioSource.PlayOneShot(playerHitClip);
+            }
         }
 
         currentHealth = Mathf.Clamp(

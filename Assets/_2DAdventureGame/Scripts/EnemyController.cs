@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -7,6 +8,8 @@ public class EnemyController : MonoBehaviour
     public bool vertical;
     public float changeTime = 3.0f;
     bool broken = true;
+
+    public AudioClip enemyHitSound;
 
     float timer;
     int direction = 1;
@@ -72,5 +75,10 @@ public class EnemyController : MonoBehaviour
         broken = false;
         rigidbody2d.simulated = false;
         animator.SetTrigger("Fixed");
+
+        if (enemyHitSound != null)
+        {
+            AudioSource.PlayClipAtPoint(enemyHitSound, transform.position);
+        }
     }
 }
